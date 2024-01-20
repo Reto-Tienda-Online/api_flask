@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, TIMESTAMP, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, TIMESTAMP, DateTime, Double
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
@@ -74,12 +74,14 @@ class CarroCompra(db.Model):
     id = Column(Integer, primary_key=True)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
     id_producto = Column(Integer, ForeignKey('productos.id'), nullable=False)
+    pagado = Column(Boolean, nullable=False)
+    isdeleted = Column(Boolean, nullable=False)
     cantidad = Column(Integer, nullable=False)
 
     usuario = relationship("Usuario")
     producto = relationship("Producto")
     
-class HistorialCompras(db.Model):
+'''class HistorialCompras(db.Model):
     __tablename__ = "historial_compras"
     id = Column(Integer, primary_key=True)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
@@ -89,6 +91,10 @@ class HistorialCompras(db.Model):
 
     usuario = relationship("Usuario")
     producto = relationship("Producto")
+    
+    
+    # REESTRUCTURAR LA TABLA USANDO TRANSACCION Y DETALLETRANSACCION
+   ''' 
 
 class Imagen(db.Model):
     __tablename__ = "imagenes"
@@ -116,12 +122,25 @@ class Transaccion(db.Model):
     id = Column(Integer, primary_key=True)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
     id_metodopago = Column(Integer, ForeignKey('metodopago.id'), nullable=False)
-    id_carrocompra = Column(Integer, ForeignKey('carrocompra.id'), nullable=False)
-    hora = Column(TIMESTAMP, nullable=False)
-
+    # id_carrocompra = Column(Integer, ForeignKey('carrocompra.id'), nullable=False)
+    importe = Column(Double, nullable=False) # LA SUMA DE TODOS LOS JUEGOS DENTRO DEL DETALLE
+    fechahora = Column(DateTime(timezone=True), nullable=False)
+    
     usuario = relationship("Usuario")
     metodopago = relationship("MetodoPago")
-    carrocompra = relationship("CarroCompra")
+    # carrocompra = relationship("CarroCompra")
+    
+class TransaccionProducto(db.Model):
+    __tablename__ = "transacionproducto"
+    id = Column(Integer, primary_key=True)
+    id_transaccion = Column(Integer, ForeignKey('transaccion.id'),nullable=False)
+    id_producto = Column(Integer, ForeignKey('productos.id'), nullable=False)
+    cantidad = Column(Integer,nullable=False) 
+    precio = Column(Double, nullable=False)  # HACER COLUMNA CALCULADA
+    
+    transaccion = relationship("Transaccion")
+    producto = relationship("Producto")
+
 
 class ListaDeseos(db.Model):
     __tablename__ = "listadeseos"
@@ -151,7 +170,7 @@ class Resena(db.Model):
     id = Column(Integer, primary_key=True)
     contenido = Column(Text, nullable=False)
     resena = Column(Text, nullable=False)
-    valoracion = Column(Boolean, nullable=False)
+    valoracion = Column(Integer, nullable=False)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
 
     usuario = relationship("Usuario")
