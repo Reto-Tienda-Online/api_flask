@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, TIMESTAMP, DateTime, Double
 from sqlalchemy.orm import relationship
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker, Session
@@ -55,6 +56,7 @@ class Producto(db.Model):
     precio_unitario = Column(String(255), nullable=False)
     id_descuento = Column(Integer, ForeignKey('descuentos.id'), nullable=False)
     id_plataforma = Column(Integer, ForeignKey('plataforma.id'), nullable=False)
+    rutatrailer = Column(String(255), nullable=False)
     descripcion = Column(String(255), nullable=False)
 
     descuento = relationship("Descuento")
@@ -101,6 +103,11 @@ class Imagen(db.Model):
     id = Column(Integer, primary_key=True)
     rutaimagen = Column(Text, nullable=False)
     id_juego = Column(Integer, ForeignKey('productos.id'), nullable=False)
+    
+    # NOMBRE DE LA CARPETA DEL JUEGO SEA IGUAL A SU ID.
+    # ESTRUCTURA JUEGO 1: 1/IMG1_1.PNG
+    #                     1/IMG1_2.PNG
+    # IMG DEL PERSONAJE   1/IMG1_0.PNG
 
     producto = relationship("Producto")
 
@@ -108,14 +115,21 @@ class MetodoPago(db.Model):
     __tablename__ = "metodopago"
     id = Column(Integer, primary_key=True)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
-    metodo = Column(String(60), nullable=False)
+    direccion_fact = Column(String(255), nullable=False)
+    nombreCompleto = Column(String(60), nullable=False)
+    id_metodo = Column(Integer, ForeignKey('tipopago.id'), nullable=False)
     numero_tarjeta = Column(String(24), nullable=False)
     cvv = Column(Integer, nullable=False)
     titular_tarjeta = Column(String(40), nullable=False)
     fecha_caduc = Column(Integer, nullable=False)
-    direccion_fact = Column(String(255), nullable=False)
-
+    
+    tipopago = relationship("TipoPago")
     usuario = relationship("Usuario")
+    
+class TipoPago(db.Model):
+    __tablename__="tipopago"
+    id = Column(Integer, primary_key=True)
+    tipopago = Column(String(50), nullable=False)
 
 class Transaccion(db.Model):
     __tablename__ = "transaccion"
@@ -123,7 +137,8 @@ class Transaccion(db.Model):
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
     id_metodopago = Column(Integer, ForeignKey('metodopago.id'), nullable=False)
     # id_carrocompra = Column(Integer, ForeignKey('carrocompra.id'), nullable=False)
-    importe = Column(Double, nullable=False) # LA SUMA DE TODOS LOS JUEGOS DENTRO DEL DETALLE
+    importe = Column(Double, nullable=False) # LA SUMA DE TODOS LOS JUEGOS DENTRO DEL CARROCOMPRA
+    # WHERE IS NOT DELETED AND IS NOT    /////// HACERLO DENTRO DEL POST
     fechahora = Column(DateTime(timezone=True), nullable=False)
     
     usuario = relationship("Usuario")
@@ -183,3 +198,23 @@ class ProductoResena(db.Model):
 
     resena = relationship("Resena")
     producto = relationship("Producto")
+
+
+
+
+# ISSAMS WISHES
+
+# UNA LLAMADA (GET), CANTIDAD DE COMPRAS POR UN TIEMPO, UN MES, UN DIA
+# EL IMPORTE DENTRO DE UN MES. 
+# LAS COMPRAS DE UN MES: {
+#    FECHA1:IMPORT
+#   
+#                         }
+# CANTIDAD DE PRODUCTOS Y CANTIDAD POR TIEMPO
+# DAR EL ID PRODUCTO, FECHAINIC Y FECHAFIN Y RECIBIR LA FECHA CON CANTIDAD
+#
+#
+# GET COMPRAS POR ID USUARIO, CADA TRANSACCION CON SU DETALLE, SACAR EL TOTAL.
+#
+#
+#
