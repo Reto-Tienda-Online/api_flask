@@ -7,7 +7,7 @@ descuentos_bp = APIRouter()
 
 # GET REQUEST
 
-@descuentos_bp.get("/all_Descuentos")
+@descuentos_bp.get("/all_descuentos")
 async def get_descuentos(db: Session = Depends(get_db)):
     query = text('SELECT * FROM descuentos')
     result = db.execute(query)

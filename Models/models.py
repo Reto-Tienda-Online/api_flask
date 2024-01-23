@@ -5,6 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy import create_engine
+from flask_login import UserMixin
 
 
 db_user = "postgres"
@@ -28,12 +29,14 @@ def get_db() -> Session:
         yield db
     finally:
         db.close()
-
-class Descuento(db.Model):
+        
+'''XXXXXXXXXXX'''
+class Descuento(db.Model):  
     __tablename__ = "descuentos"
     id = Column(Integer, primary_key=True)
     descuento = Column(Integer, nullable=False)
 
+'''XXXXXXXXXXX'''
 class Categoria(db.Model):
     __tablename__ = "categorias"
     id = Column(Integer, primary_key=True)
@@ -45,10 +48,11 @@ class Usuario(db.Model):
     id = Column(Integer, primary_key=True)
     nombre = Column(String(255), nullable=False)
     apellido = Column(String(255), nullable=False)
-    correo = Column(String(255), nullable=False)
+    correo = Column(String(255), unique=True, nullable=False)
     contrasena = Column(String(255), nullable=False)
     admin = Column(Boolean, nullable=False)
 
+'''XXXXXXXXXXX'''
 class Producto(db.Model):
     __tablename__ = "productos"
     id = Column(Integer, primary_key=True)
@@ -97,6 +101,17 @@ class CarroCompra(db.Model):
     
     # REESTRUCTURAR LA TABLA USANDO TRANSACCION Y DETALLETRANSACCION
    ''' 
+   
+
+class Logos(db.Model):
+    __tablename__ = "logos"
+    id = Column(Integer, primary_key=True)
+    rutalogo = Column(Integer, primary_key=True)
+    id_plataforma = Column(Integer, ForeignKey('plataforma.id'), nullable=False)
+    id_maquina = Column(Integer, ForeignKey('maquina.id'), nullable=False)
+    
+    plataforma = relationship("Plataforma")
+    maquina = relationship("Maquina")
 
 class Imagen(db.Model):
     __tablename__ = "imagenes"
@@ -167,11 +182,17 @@ class ListaDeseos(db.Model):
     usuario = relationship("Usuario")
     producto = relationship("Producto")
 
+'''XXXXXXXXXXX'''
 class Maquina(db.Model):
     __tablename__ = "maquina"
     id = Column(Integer, primary_key=True)
     maquina = Column(String(60), nullable=False)
+    
+    
 
+
+
+'''XXXXXXXXXXX'''
 class Plataforma(db.Model):
     __tablename__ = "plataforma"
     id = Column(Integer, primary_key=True)

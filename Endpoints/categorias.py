@@ -7,7 +7,7 @@ categorias_bp = APIRouter()
 
 # GET REQUEST
 
-@categorias_bp.get("/all_Categorias")
+@categorias_bp.get("/all_categorias")
 async def get_categorias(db: Session = Depends(get_db)):
     query = text('SELECT * FROM categorias')
     result = db.execute(query)

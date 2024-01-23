@@ -28,6 +28,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm import sessionmaker, Session
+from Models.models import Usuario
 
 flask_app = Flask(__name__)
 
@@ -37,9 +38,7 @@ db_host = "localhost"
 db_port = "5432"
 db_name = "2retodevelop"
 
-'''class APIKeyHeader(db.Model):
-    apikey: str
-'''
+
 database_uri = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
 flask_app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
@@ -50,32 +49,24 @@ migrate = Migrate(flask_app, db)
 
 app = FastAPI()
 
-routers = [descuentos_bp, categorias_bp]
-for router in routers:
-    app.include_router(router)
-
-'''
-
-@app.middleware("http")
-async def api_key_middleware(request: Request, call_next, apikey: str = Depends(APIKeyHeader(name="apikey", auto_error=False))):
-    if apikey != "12345":
-        raise HTTPException(status_code=403, detail="API Key is invalid")
-
-    response = await call_next(request)
-    return response
-
-# Use the middleware in the app
-app.middleware("http")(api_key_middleware)
-# Enable CORS for all routes
+# Set up CORS middleware
+origins = ["*"]  # Replace with your actual frontend URL(s)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-'''
+routers = [descuentos_bp, categorias_bp, productoresena_bp, 
+           productos_bp,productoscategorias_bp, usuarios_bp, 
+           maquinas_bp, plataforma_bp, productos_bp
+           ]
+for router in routers:
+    app.include_router(router)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
