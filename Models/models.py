@@ -60,8 +60,9 @@ class Producto(db.Model):
     precio_unitario = Column(String(255), nullable=False)
     id_descuento = Column(Integer, ForeignKey('descuentos.id'), nullable=False)
     id_plataforma = Column(Integer, ForeignKey('plataforma.id'), nullable=False)
-    rutatrailer = Column(String(255), nullable=False)
-    descripcion = Column(String(255), nullable=False)
+    rutavideo = Column(String(255), nullable=False)
+    iframetrailer = Column(String(255), nullable=False)
+    descripcion = Column(Text, nullable=False)
 
     descuento = relationship("Descuento")
     plataforma = relationship("Plataforma")
@@ -106,7 +107,9 @@ class CarroCompra(db.Model):
 class Logos(db.Model):
     __tablename__ = "logos"
     id = Column(Integer, primary_key=True)
-    rutalogo = Column(Integer, primary_key=True)
+    rutalogo = Column(String(255))
+    tipo = Column(String(30))
+    nombre = Column(String(255))
     id_plataforma = Column(Integer, ForeignKey('plataforma.id'), nullable=False)
     id_maquina = Column(Integer, ForeignKey('maquina.id'), nullable=False)
     

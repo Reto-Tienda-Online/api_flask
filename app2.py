@@ -56,12 +56,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Set the expiration time for the access token
 # OAuth2PasswordBearer is a class for handling OAuth2 password flow
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Hashing helper
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-# Set up CORS middleware
-origins = ["*"]  # Replace with your actual frontend URL(s)
+origins = ["*"]  
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -70,16 +68,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Secret key to sign JWT
 SECRET_KEY = "your_secret_key"
 
-# Algorithm to sign JWT
 ALGORITHM = "HS256"
 
-# OAuth2PasswordBearer for handling token in the Authorization header
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_current_user(token: str = Depends(oauth2_scheme), db1: Session = Depends(get_db)):
@@ -103,13 +97,10 @@ def get_current_user(token: str = Depends(oauth2_scheme), db1: Session = Depends
     return user
 
 
-# Example protected route
 @app.get("/protected")
 async def protected_route(current_user: Usuario = Depends(get_current_user)):
     return {"message": "This is a protected route", "user": current_user.nombre}
-# Dependency to get current user from the token
 
-# Function to create a new JWT token
 def create_jwt_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -120,16 +111,16 @@ def create_jwt_token(data: dict):
 
 from sqlalchemy.orm import Session as SqlSession
 from Models.models import get_db
-# Route to handle token creation
 
-@app.post("/token")
+@app.post("/login")
 async def login_for_access_token(    form_data: OAuth2PasswordRequestForm = Depends(), db: SqlSession = Depends(get_db)):
     user = db.query(Usuario).filter(Usuario.correo == form_data.username).first()
+    
     if user and pwd_context.verify(form_data.password, user.contrasena):
-        # Create a JWT token
         token_data = {"sub": user.correo}
         access_token = create_jwt_token(token_data)
-        return {"access_token": access_token, "token_type": "bearer"}
+        
+        return {"access_token": access_token, "token_type": "bearer", "usuario":user}
     else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -140,9 +131,20 @@ async def login_for_access_token(    form_data: OAuth2PasswordRequestForm = Depe
         
 # Include other routers as you did before
 routers = [descuentos_bp, categorias_bp, productoresena_bp,
-           productos_bp, productoscategorias_bp, usuarios_bp, maquinas_bp, plataforma_bp]
+           productos_bp, productoscategorias_bp, usuarios_bp, maquinas_bp, plataforma_bp
+           ,carrocompra_bp,imagenes_bp, listadeseo_bp, metodopago_bp, resena_bp,transacciones_bp, transaccionproducto_bp
+           ]
 for router in routers:
     app.include_router(router)
+
+origins = ["*"]  
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     import uvicorn

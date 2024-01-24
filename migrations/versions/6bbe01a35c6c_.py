@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 24b26be01d3b
+Revision ID: 6bbe01a35c6c
 Revises: 
-Create Date: 2024-01-20 14:40:28.921259
+Create Date: 2024-01-24 10:08:34.809367
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '24b26be01d3b'
+revision = '6bbe01a35c6c'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -34,6 +34,11 @@ def upgrade():
     sa.Column('maquina', sa.String(length=60), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('tipopago',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('tipopago', sa.String(length=50), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('usuarios',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('nombre', sa.String(length=255), nullable=False),
@@ -41,17 +46,20 @@ def upgrade():
     sa.Column('correo', sa.String(length=255), nullable=False),
     sa.Column('contrasena', sa.String(length=255), nullable=False),
     sa.Column('admin', sa.Boolean(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('correo')
     )
     op.create_table('metodopago',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('id_usuario', sa.Integer(), nullable=False),
-    sa.Column('metodo', sa.String(length=60), nullable=False),
+    sa.Column('direccion_fact', sa.String(length=255), nullable=False),
+    sa.Column('nombreCompleto', sa.String(length=60), nullable=False),
+    sa.Column('id_metodo', sa.Integer(), nullable=False),
     sa.Column('numero_tarjeta', sa.String(length=24), nullable=False),
     sa.Column('cvv', sa.Integer(), nullable=False),
     sa.Column('titular_tarjeta', sa.String(length=40), nullable=False),
     sa.Column('fecha_caduc', sa.Integer(), nullable=False),
-    sa.Column('direccion_fact', sa.String(length=255), nullable=False),
+    sa.ForeignKeyConstraint(['id_metodo'], ['tipopago.id'], ),
     sa.ForeignKeyConstraint(['id_usuario'], ['usuarios.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -71,13 +79,26 @@ def upgrade():
     sa.ForeignKeyConstraint(['id_usuario'], ['usuarios.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('logos',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('rutalogo', sa.String(length=255), nullable=True),
+    sa.Column('tipo', sa.String(length=30), nullable=True),
+    sa.Column('nombre', sa.String(length=255), nullable=True),
+    sa.Column('id_plataforma', sa.Integer(), nullable=False),
+    sa.Column('id_maquina', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['id_maquina'], ['maquina.id'], ),
+    sa.ForeignKeyConstraint(['id_plataforma'], ['plataforma.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('productos',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('producto', sa.String(length=255), nullable=False),
     sa.Column('precio_unitario', sa.String(length=255), nullable=False),
     sa.Column('id_descuento', sa.Integer(), nullable=False),
     sa.Column('id_plataforma', sa.Integer(), nullable=False),
-    sa.Column('descripcion', sa.String(length=255), nullable=False),
+    sa.Column('rutavideo', sa.String(length=255), nullable=False),
+    sa.Column('iframetrailer', sa.String(length=255), nullable=False),
+    sa.Column('descripcion', sa.Text(), nullable=False),
     sa.ForeignKeyConstraint(['id_descuento'], ['descuentos.id'], ),
     sa.ForeignKeyConstraint(['id_plataforma'], ['plataforma.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -158,10 +179,12 @@ def downgrade():
     op.drop_table('carrocompra')
     op.drop_table('transaccion')
     op.drop_table('productos')
+    op.drop_table('logos')
     op.drop_table('resena')
     op.drop_table('plataforma')
     op.drop_table('metodopago')
     op.drop_table('usuarios')
+    op.drop_table('tipopago')
     op.drop_table('maquina')
     op.drop_table('descuentos')
     op.drop_table('categorias')

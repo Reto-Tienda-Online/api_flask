@@ -13,6 +13,7 @@ async def get_usuarios(db: Session = Depends(get_db)):
     return [{"id": usuario.id, "nombre": usuario.nombre, "apellido": usuario.apellido,
              "correo": usuario.correo, "admin": usuario.admin} for usuario in usuarios]
     
+# MIRAAAAAAAR
 
 class CreateUser(BaseModel):
     nombre: str
@@ -20,6 +21,18 @@ class CreateUser(BaseModel):
     correo: str
     contrasena: str
     admin: bool
+    
+@usuarios_bp.post("/register")
+async def create_usuario(user: CreateUser, db: Session = Depends(get_db)):
+    hashed_password = bcrypt.hash(user.contrasena)
+    db_user = Usuario(nombre=user.nombre, apellido=user.apellido, correo=user.correo,
+                      contrasena=hashed_password, admin=user.admin)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    
+    return {"result": "Usuario created successfully", "user": db_user.__dict__} 
+
 
 @usuarios_bp.post("/usuarios")
 async def create_usuario(user: CreateUser, db: Session = Depends(get_db)):
