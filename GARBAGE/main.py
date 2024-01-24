@@ -24,31 +24,8 @@ uvicorn controladorApi:app --host localhost --port 8000 --reload
 '''
 
 if __name__ == "__main__":
-    # Esta línea verifica si el script se está ejecutando como un programa principal.
-    # En Python, cuando ejecutas un script, __name__ se establece en "__main__".
-    # Esto garantiza que el código debajo de esta condición solo se ejecutará si este script se ejecuta directamente.
-
     import uvicorn
-
-    # Importamos el módulo 'uvicorn', que es un servidor ASGI (Asynchronous Server Gateway Interface)
-    # utilizado para servir aplicaciones web construidas en FastAPI y otros frameworks similares.
-
     uvicorn.run("main:app", host="localhost", port=8080, reload=True)
-    # Esta línea llama a la función 'uvicorn.run' para iniciar el servidor web.
-    # - "controladorApi:app" es el argumento que especifica qué aplicación ASGI se debe ejecutar.
-    #   En este caso, 'controladorApi' es el nombre del módulo que contiene la aplicación FastAPI, y 'app' es la instancia de la aplicación FastAPI.
-    # - 'host="localhost"' especifica que el servidor escuchará en el host local (127.0.0.1).
-    # - 'port=8080' especifica que el servidor escuchará en el puerto 8080.
-    # - 'reload=True' indica que el servidor debe recargar automáticamente cuando se realicen cambios en el código.
-
-    '''
-
-    '''
-# Creamos una instancia de la clase FastAPI y la asignamos a la variable 'app'.
-# Esta variable 'app' representa nuestra aplicación web construida con FastAPI.
-# A través de 'app', podremos definir rutas, endpoints, modelos de datos y más para nuestra aplicación.
-# FastAPI es un moderno framework web que facilita la creación de API RESTful en Python.
-# Con 'app', podemos configurar y personalizar nuestra aplicación web de acuerdo a nuestras necesidades.
 
 
 app = FastAPI()
