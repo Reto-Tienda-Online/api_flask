@@ -1,16 +1,12 @@
 from flask import Flask
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import APIKeyHeader
 from flask_migrate import Migrate
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from pydantic import BaseModel
 from sqlalchemy.orm import Session as SqlSession
-from starlette.requests import Request
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import APIKeyHeader
 from Endpoints.descuentos import descuentos_bp
 from Endpoints.categorias import categorias_bp
 from Endpoints.carrocompra import carrocompra_bp
@@ -26,6 +22,7 @@ from Endpoints.resena import resena_bp
 from Endpoints.transacciones import transacciones_bp
 from Endpoints.transaccionproducto import transaccionproducto_bp
 from Endpoints.usuarios import usuarios_bp, Usuario
+from Endpoints.logos import logos_bp
 from Models.models import db, get_db
 from fastapi import FastAPI, Depends
 from jose import JWTError, jwt
@@ -114,7 +111,9 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 routers = [descuentos_bp, categorias_bp, productoresena_bp, 
            productos_bp,productoscategorias_bp, usuarios_bp, 
-           maquinas_bp, plataforma_bp, productos_bp
+           maquinas_bp, plataforma_bp, productos_bp, imagenes_bp,
+           logos_bp, carrocompra_bp, listadeseo_bp, metodopago_bp,
+           resena_bp, transacciones_bp, transaccionproducto_bp,
            ]
 for router in routers:
     app.include_router(router)
@@ -128,6 +127,33 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+'''
+class APIKeyHeader(BaseModel):
+    apikey: str
+
+
+apikey = "apikey"
+
+
+@app.middleware("http")
+async def api_key_middleware(request: Request, call_next):
+    
+    #if (request.url.path == "/basket/users" and request.method == "GET") or request.method != "GET":
+        # Check if the API key is provided in the "apikey" header
+    api_key_header = request.headers.get("apikey")
+    if api_key_header != app.state.api_key:
+        raise HTTPException(status_code=403, detail="API Key is invalid")
+
+    response = await call_next(request)
+    return response
+@app.on_event("startup")
+async def startup_db_client():
+    
+    app.state.api_key = apikey
+
+
+'''
 
 if __name__ == "__main__":
     import uvicorn

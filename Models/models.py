@@ -22,7 +22,6 @@ db = SQLAlchemy()
 engine = create_engine(database_uri)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
 def get_db() -> Session:
     db = SessionLocal()
     try:
@@ -30,13 +29,11 @@ def get_db() -> Session:
     finally:
         db.close()
         
-'''XXXXXXXXXXX'''
 class Descuento(db.Model):  
     __tablename__ = "descuentos"
     id = Column(Integer, primary_key=True)
     descuento = Column(Integer, nullable=False)
 
-'''XXXXXXXXXXX'''
 class Categoria(db.Model):
     __tablename__ = "categorias"
     id = Column(Integer, primary_key=True)
@@ -52,11 +49,10 @@ class Usuario(db.Model):
     contrasena = Column(String(255), nullable=False)
     admin = Column(Boolean, nullable=False)
 
-'''XXXXXXXXXXX'''
 class Producto(db.Model):
     __tablename__ = "productos"
     id = Column(Integer, primary_key=True)
-    # ventas = Column(Integer, nullable=False)
+    # ventas = Column(Integer, nullable=True)
     producto = Column(String(255), nullable=False)
     precio_unitario = Column(String(255), nullable=False)
     id_descuento = Column(Integer, ForeignKey('descuentos.id'), nullable=False)
@@ -107,12 +103,7 @@ class Imagen(db.Model):
     id = Column(Integer, primary_key=True)
     rutaimagen = Column(Text, nullable=False)
     id_juego = Column(Integer, ForeignKey('productos.id'), nullable=False)
-    
-    # NOMBRE DE LA CARPETA DEL JUEGO SEA IGUAL A SU ID.
-    # ESTRUCTURA JUEGO 1: 1/IMG1_1.PNG
-    #                     1/IMG1_2.PNG
-    # IMG DEL PERSONAJE   1/IMG1_0.PNG
-
+   
     producto = relationship("Producto")
 
 class MetodoPago(db.Model):
@@ -171,17 +162,12 @@ class ListaDeseos(db.Model):
     usuario = relationship("Usuario")
     producto = relationship("Producto")
 
-'''XXXXXXXXXXX'''
 class Maquina(db.Model):
     __tablename__ = "maquina"
     id = Column(Integer, primary_key=True)
     maquina = Column(String(60), nullable=False)
     
     
-
-
-
-'''XXXXXXXXXXX'''
 class Plataforma(db.Model):
     __tablename__ = "plataforma"
     id = Column(Integer, primary_key=True)
@@ -225,6 +211,4 @@ class ProductoResena(db.Model):
 #
 #
 # GET COMPRAS POR ID USUARIO, CADA TRANSACCION CON SU DETALLE, SACAR EL TOTAL.
-#
-#
 #

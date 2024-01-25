@@ -1,12 +1,15 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from Models.models import Imagen, get_db
+from Models.models import Logos, get_db
 from sqlalchemy import Text, text
 
-imagenes_bp = APIRouter()
+logos_bp = APIRouter()
 
-@imagenes_bp.get("/imagenes")
-async def get_categorias(id: int = Query(None), rutaimagen: str = Query(None), db: Session = Depends(get_db)):
+# /imgs/logos/blizzard.png
+
+
+@logos_bp.get("/logos")
+async def get_categorias(id: int = Query(None), rutalogo: str = Query(None), db: Session = Depends(get_db)):
     conditions = []
     params = {}
 
@@ -14,11 +17,11 @@ async def get_categorias(id: int = Query(None), rutaimagen: str = Query(None), d
         conditions.append("id = :id")
         params['id'] = id
         
-    if rutaimagen is not None:
-        conditions.append("rutaimagen = :rutaimagen")
-        params['rutaimagen'] = rutaimagen
+    if rutalogo is not None:
+        conditions.append("rutalogo = :rutalogo")
+        params['rutalogo'] = rutalogo
     
-    query = text('SELECT * FROM imagenes')
+    query = text('SELECT * FROM logos')
     if conditions:
         query = text(str(query) + " WHERE " + " AND ".join(conditions))
 

@@ -1,0 +1,22 @@
+INSERT INTO imagenes (rutaimagen, id_juego)
+VALUES
+    ('/img/1/1.webp', 1),  
+    ('/img/2/1.webp', 2),  
+    ('/img/3/1.webp', 3),  
+    ('/img/4/1.webp', 4),  
+    ('/img/5/1.webp', 5),  
+    ('/img/6/1.webp', 6),  
+    ('/img/7/1.webp', 7),  
+    ('/img/8/1.webp', 8),  
+    ('/img/9/1.webp', 9),  
+    ('/img/10/1.webp', 10),
+    ('/img/11/1.webp', 11),
+    ('/img/12/1.webp', 12),
+    ('/img/13/1.webp', 13),
+    ('/img/14/1.webp', 14),
+    ('/img/15/1.webp', 15),
+    ('/img/16/1.webp', 16),
+    ('/img/17/1.webp', 17),
+    ('/img/18/1.webp', 18),  
+    ('/img/19/1.webp', 19),  
+    ('/img/20/1.webp', 20);  
