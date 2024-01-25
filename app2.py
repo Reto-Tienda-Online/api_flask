@@ -29,38 +29,33 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
+from sqlalchemy.orm import Session as SqlSession
+
 
 flask_app = Flask(__name__)
 
-db_user = "postgres"
-db_password = "12345"
-db_host = "localhost"
-db_port = "5432"
-db_name = "2retodevelop"
 
+app2 = FastAPI()
+
+# Configure SQLAlchemy
+db_user = "admin123"
+db_password = "Admin.123"
+db_host = "pgsql03.dinaserver.com"
+db_port = "5432"
+db_name = "tienda_juegos"
 database_uri = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
-flask_app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
-flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-db.init_app(flask_app)
-migrate = Migrate(flask_app, db)
-
-app = FastAPI()
-
-# Configure JWT settings
-SECRET_KEY = "your-secret-key"  # Change this to a strong, random secret key
+SECRET_KEY = "your-secret-key"  
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Set the expiration time for the access token
+ACCESS_TOKEN_EXPIRE_MINUTES = 30  
 
-# OAuth2PasswordBearer is a class for handling OAuth2 password flow
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
-origins = ["*"]  
-app.add_middleware(
+origins = ["*"]
+app2.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
@@ -68,17 +63,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-SECRET_KEY = "your_secret_key"
-
-ALGORITHM = "HS256"
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def get_current_user(token: str = Depends(oauth2_scheme), db1: Session = Depends(get_db)):
+
+def get_current_user(token: str = Depends(oauth2_scheme), db1: SqlSession = Depends(get_db)):
     credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
+        status_code=401,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
@@ -96,8 +87,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db1: Session = Depends
 
     return user
 
-
-@app.get("/protected")
+@app2.get("/protected")
 async def protected_route(current_user: Usuario = Depends(get_current_user)):
     return {"message": "This is a protected route", "user": current_user.nombre}
 
@@ -108,46 +98,30 @@ def create_jwt_token(data: dict):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-
-from sqlalchemy.orm import Session as SqlSession
-from Models.models import get_db
-
-@app.post("/login")
-async def login_for_access_token(    form_data: OAuth2PasswordRequestForm = Depends(), db: SqlSession = Depends(get_db)):
+@app2.post("/token")
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: SqlSession = Depends(get_db)):
     user = db.query(Usuario).filter(Usuario.correo == form_data.username).first()
     
     if user and pwd_context.verify(form_data.password, user.contrasena):
         token_data = {"sub": user.correo}
         access_token = create_jwt_token(token_data)
         
-        return {"access_token": access_token, "token_type": "bearer", "usuario":user}
+        return {"access_token": access_token, "token_type": "bearer", "usuario": user}
     else:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"}
-            
-            
         )
-        
-        
-# Include other routers as you did before
-routers = [descuentos_bp, categorias_bp, productoresena_bp,
-           productos_bp, productoscategorias_bp, usuarios_bp, maquinas_bp, plataforma_bp
-           ,carrocompra_bp,imagenes_bp, listadeseo_bp, metodopago_bp, resena_bp,transacciones_bp, transaccionproducto_bp
-           ]
-for router in routers:
-    app.include_router(router)
 
-origins = ["*"]  
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+routers = [descuentos_bp, categorias_bp, productoresena_bp, productos_bp, productoscategorias_bp, usuarios_bp,
+           maquinas_bp, plataforma_bp ,carrocompra_bp,imagenes_bp, listadeseo_bp, metodopago_bp, resena_bp,
+           transacciones_bp, transaccionproducto_bp,]
+for router in routers:
+    app2.include_router(router)
+
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
+    uvicorn.run("app2:app2", host="localhost", port=8000, reload=True, log_level="info")
+

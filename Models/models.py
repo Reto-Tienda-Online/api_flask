@@ -8,11 +8,11 @@ from sqlalchemy import create_engine
 from flask_login import UserMixin
 
 
-db_user = "postgres"
-db_password = "12345"
-db_host = "localhost"
+db_user = "admin123"
+db_password = "Admin.123"
+db_host = "pgsql03.dinaserver.com"
 db_port = "5432"
-db_name = "2retodevelop"
+db_name = "tienda_juegos"
 
 database_uri = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
@@ -87,21 +87,6 @@ class CarroCompra(db.Model):
 
     usuario = relationship("Usuario")
     producto = relationship("Producto")
-    
-'''class HistorialCompras(db.Model):
-    __tablename__ = "historial_compras"
-    id = Column(Integer, primary_key=True)
-    id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
-    id_producto = Column(Integer, ForeignKey('productos.id'), nullable=False)
-    cantidad = Column(Integer, nullable=False)
-    fecha_compra = Column(DateTime, nullable=False)
-
-    usuario = relationship("Usuario")
-    producto = relationship("Producto")
-    
-    
-    # REESTRUCTURAR LA TABLA USANDO TRANSACCION Y DETALLETRANSACCION
-   ''' 
    
 
 class Logos(db.Model):

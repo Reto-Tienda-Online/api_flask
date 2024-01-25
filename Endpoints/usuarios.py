@@ -33,19 +33,6 @@ async def create_usuario(user: CreateUser, db: Session = Depends(get_db)):
     
     return {"result": "Usuario created successfully", "user": db_user.__dict__} 
 
-
-@usuarios_bp.post("/usuarios")
-async def create_usuario(user: CreateUser, db: Session = Depends(get_db)):
-    hashed_password = bcrypt.hash(user.contrasena)
-    db_user = Usuario(nombre=user.nombre, apellido=user.apellido, correo=user.correo,
-                      contrasena=hashed_password, admin=user.admin)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    
-    return {"result": "Usuario created successfully", "user": db_user.__dict__} 
-
-
 class UpdateUser(BaseModel):
     nombre: str
     apellido: str
