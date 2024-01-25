@@ -1,9 +1,12 @@
 from flask import Flask
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
 from flask_migrate import Migrate
+from passlib.context import CryptContext
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
+from sqlalchemy.orm import Session as SqlSession
 from starlette.requests import Request
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,13 +25,15 @@ from Endpoints.productoscategorias import productoscategorias_bp
 from Endpoints.resena import resena_bp
 from Endpoints.transacciones import transacciones_bp
 from Endpoints.transaccionproducto import transaccionproducto_bp
-from Endpoints.usuarios import usuarios_bp 
-from Models.models import db
+from Endpoints.usuarios import usuarios_bp, Usuario
+from Models.models import db, get_db
 from fastapi import FastAPI, Depends
+from jose import JWTError, jwt
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm import sessionmaker, Session
-from Models.models import Usuario
+from datetime import datetime, timedelta
+
 
 flask_app = Flask(__name__)
 
@@ -48,6 +53,62 @@ db.init_app(flask_app)
 migrate = Migrate(flask_app, db)
 
 app = FastAPI()
+
+SECRET_KEY = "your-secret-key"  
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30  
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def get_current_user(token: str = Depends(oauth2_scheme), db1: SqlSession = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        correo: str = payload.get("sub")
+        if correo is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+
+    user = db1.query(Usuario).filter(Usuario.correo == correo).first()
+    if user is None:
+        raise credentials_exception
+
+    return user
+
+@app.get("/protected")
+async def protected_route(current_user: Usuario = Depends(get_current_user)):
+    return {"message": "This is a protected route", "user": current_user.nombre}
+
+def create_jwt_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+@app.post("/token")
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: SqlSession = Depends(get_db)):
+    user = db.query(Usuario).filter(Usuario.correo == form_data.username).first()
+    
+    if user and pwd_context.verify(form_data.password, user.contrasena):
+        token_data = {"sub": user.correo}
+        access_token = create_jwt_token(token_data)
+        
+        return {"access_token": access_token, "token_type": "bearer", "usuario": user}
+    else:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+
 
 
 
@@ -70,4 +131,4 @@ app.add_middleware(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="192.168.1.67", port=8000, log_level="info")
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")

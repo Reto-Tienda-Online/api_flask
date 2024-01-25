@@ -6,5 +6,5 @@ INSERT INTO categorias (categoria, descripcion) VALUES
     ('Deportes', 'Videojuegos basados en deportes reales o ficticios'),
     ('Simulación', 'Juegos que imitan situaciones de la vida real para proporcionar experiencias realistas'),
     ('Puzzle', 'Juegos que desafían la mente con rompecabezas y problemas lógicos'),
-    ('Survival Horror', 'Juegos que combinan elementos de supervivencia y horror'),
-    ('Multijugador en línea', 'Juegos que permiten la interacción en línea con otros jugadores en tiempo real');
+    ('Terror', 'Juegos que combinan elementos de supervivencia y horror'),
+    ('MMO', 'Juegos que permiten la interacción en línea con otros jugadores en tiempo real');

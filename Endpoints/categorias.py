@@ -1,16 +1,34 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from Models.models import Categoria, get_db
 from sqlalchemy import Text, text
+from typing import List
 
 categorias_bp = APIRouter()
 
 # GET REQUEST
 
+
+from fastapi import Query
+
 @categorias_bp.get("/all_categorias")
-async def get_categorias(db: Session = Depends(get_db)):
+async def get_categorias(id: int = Query(None), categoria: str = Query(None), db: Session = Depends(get_db)):
+    conditions = []
+    params = {}
+
+    if id is not None:
+        conditions.append("id = :id")
+        params['id'] = id
+        
+    if categoria is not None:
+        conditions.append("categoria = :categoria")
+        params['categoria'] = categoria
+    
     query = text('SELECT * FROM categorias')
-    result = db.execute(query)
+    if conditions:
+        query = text(str(query) + " WHERE " + " AND ".join(conditions))
+
+    result = db.execute(query, params)
     categorias_list = [dict(row._asdict()) for row in result.fetchall()]
 
     return categorias_list

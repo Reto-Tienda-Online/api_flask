@@ -13,7 +13,6 @@ async def get_usuarios(db: Session = Depends(get_db)):
     return [{"id": usuario.id, "nombre": usuario.nombre, "apellido": usuario.apellido,
              "correo": usuario.correo, "admin": usuario.admin} for usuario in usuarios]
     
-# MIRAAAAAAAR
 
 class CreateUser(BaseModel):
     nombre: str
