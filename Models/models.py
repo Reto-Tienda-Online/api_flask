@@ -146,7 +146,7 @@ class TransaccionProducto(db.Model):
     id_transaccion = Column(Integer, ForeignKey('transaccion.id'),nullable=False)
     id_producto = Column(Integer, ForeignKey('productos.id'), nullable=False)
     cantidad = Column(Integer,nullable=False) 
-    precio = Column(Double, nullable=False)  # HACER COLUMNA CALCULADA
+    precio = Column(Double, nullable=False) 
     
     transaccion = relationship("Transaccion")
     producto = relationship("Producto")
@@ -180,11 +180,13 @@ class Resena(db.Model):
     __tablename__ = "resena"
     id = Column(Integer, primary_key=True)
     contenido = Column(Text, nullable=False)
+    id_juego = Column(Integer, ForeignKey('productos.id'), nullable=False)
     resena = Column(Text, nullable=False)
     valoracion = Column(Integer, nullable=False)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
 
     usuario = relationship("Usuario")
+    producto = relationship("Producto")
 
 class ProductoResena(db.Model):
     __tablename__ = "producto_resena"

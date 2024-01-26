@@ -1,6 +1,6 @@
 from flask import Flask
 from fastapi import FastAPI, HTTPException, Depends, Query
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware  
 from flask_migrate import Migrate
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -108,13 +108,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 
-
 routers = [descuentos_bp, categorias_bp, productoresena_bp, 
-           productos_bp,productoscategorias_bp, usuarios_bp, 
-           maquinas_bp, plataforma_bp, productos_bp, imagenes_bp,
-           logos_bp, carrocompra_bp, listadeseo_bp, metodopago_bp,
-           resena_bp, transacciones_bp, transaccionproducto_bp,
-           ]
+productos_bp,productoscategorias_bp, usuarios_bp, 
+maquinas_bp, plataforma_bp, productos_bp, imagenes_bp,
+logos_bp, carrocompra_bp, listadeseo_bp, metodopago_bp,
+resena_bp, transacciones_bp, transaccionproducto_bp]
+
+
 for router in routers:
     app.include_router(router)
 
@@ -129,6 +129,7 @@ app.add_middleware(
 )
 
 '''
+
 class APIKeyHeader(BaseModel):
     apikey: str
 

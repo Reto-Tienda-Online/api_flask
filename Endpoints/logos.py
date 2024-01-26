@@ -9,7 +9,7 @@ logos_bp = APIRouter()
 
 
 @logos_bp.get("/logos")
-async def get_categorias(id: int = Query(None), rutalogo: str = Query(None), db: Session = Depends(get_db)):
+async def get_logos(id: int = Query(None), rutalogo: str = Query(None), db: Session = Depends(get_db)):
     conditions = []
     params = {}
 
@@ -26,6 +26,6 @@ async def get_categorias(id: int = Query(None), rutalogo: str = Query(None), db:
         query = text(str(query) + " WHERE " + " AND ".join(conditions))
 
     result = db.execute(query, params)
-    categorias_list = [dict(row._asdict()) for row in result.fetchall()]
+    logos_list = [dict(row._asdict()) for row in result.fetchall()]
 
-    return categorias_list
+    return logos_list
