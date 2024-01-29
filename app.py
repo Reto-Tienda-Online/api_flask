@@ -159,3 +159,17 @@ async def startup_db_client():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
+
+
+
+# Julio Augusto
+
+# Productos --> Nombre Get.  XXXXXXX
+# Que se vea la contraseña en el Get y en el Put  
+# Sacar la plataforma dentro de producto en modo diccionario  XXXXXXXX
+
+
+# Diego
+
+# Get de ProductosCategorias
+# Lo mismo para las plataformas

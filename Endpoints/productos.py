@@ -33,19 +33,19 @@ async def get_productos(id: int = Query(None), producto: str = Query(None), db: 
     if id is not None:
         conditions.append("id = :id")
         params['id'] = id
-        
+
     if producto is not None:
         conditions.append("producto = :producto")
         params['producto'] = producto
-    
-    query = text('SELECT * FROM productos')
+
+    query = text('SELECT productos.*, plataforma.plataforma as nombreplataforma FROM productos LEFT JOIN plataforma ON productos.id_plataforma = plataforma.id')
     if conditions:
         query = text(str(query) + " WHERE " + " AND ".join(conditions))
 
     result = db.execute(query, params)
-    categorias_list = [dict(row._asdict()) for row in result.fetchall()]
+    productos_list = [dict(row._asdict()) for row in result.fetchall()]
 
-    return categorias_list
+    return productos_list
 
 class ProductoCreate(BaseModel):
     producto: str

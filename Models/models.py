@@ -48,6 +48,8 @@ class Usuario(db.Model):
     correo = Column(String(255), unique=True, nullable=False)
     contrasena = Column(String(255), nullable=False)
     admin = Column(Boolean, nullable=False)
+    
+    resenas = relationship("Resena", back_populates="usuario", cascade="all, delete-orphan")
 
 class Producto(db.Model):
     __tablename__ = "productos"
@@ -185,7 +187,8 @@ class Resena(db.Model):
     valoracion = Column(Integer, nullable=False)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
 
-    usuario = relationship("Usuario")
+    
+    usuario = relationship("Usuario", back_populates="resenas")
     producto = relationship("Producto")
 
 class ProductoResena(db.Model):
