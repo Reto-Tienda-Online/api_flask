@@ -173,3 +173,5 @@ if __name__ == "__main__":
 
 # Get de ProductosCategorias
 # Lo mismo para las plataformas
+# Recibir 3 reseñas dentro del producto
+

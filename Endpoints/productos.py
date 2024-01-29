@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from Models.models import Producto, get_db
 from sqlalchemy import Text, text, and_
 from pydantic import BaseModel
+from typing import Optional
 
 productos_bp = APIRouter()
 
@@ -38,7 +39,12 @@ async def get_productos(id: int = Query(None), producto: str = Query(None), db: 
         conditions.append("producto = :producto")
         params['producto'] = producto
 
-    query = text('SELECT productos.*, plataforma.plataforma as nombreplataforma FROM productos LEFT JOIN plataforma ON productos.id_plataforma = plataforma.id')
+    query = text('''
+        SELECT productos.*, plataforma.plataforma as nombreplataforma
+        FROM productos
+        LEFT JOIN plataforma ON productos.id_plataforma = plataforma.id
+    ''')
+
     if conditions:
         query = text(str(query) + " WHERE " + " AND ".join(conditions))
 
@@ -46,6 +52,30 @@ async def get_productos(id: int = Query(None), producto: str = Query(None), db: 
     productos_list = [dict(row._asdict()) for row in result.fetchall()]
 
     return productos_list
+
+
+
+@productos_bp.get("/productoresena")
+async def buscar_producto(producto_id: int = Query(None), db: Session = Depends(get_db)):
+    conditions = []
+    params = {}
+
+    if producto_id is not None:
+        conditions.append("id_juego = :producto_id")
+        params["producto_id"] = producto_id
+
+    query = text('SELECT * FROM resena')
+    
+    if conditions:
+        query = text(str(query) + " WHERE " + " AND ".join(conditions))
+
+    result = db.execute(query, params)
+    productos_list = [dict(row._asdict()) for row in result.fetchall()]
+
+    return productos_list
+
+
+
 
 class ProductoCreate(BaseModel):
     producto: str
@@ -75,23 +105,30 @@ async def create_producto(producto_create: ProductoCreate, db: Session = Depends
 
     return new_producto
 
+
+class ProductoUpdate(BaseModel):
+    producto: Optional[str] = None
+    precio_unitario: Optional[str] = None
+    id_descuento: Optional[int] = None
+    id_plataforma: Optional[int] = None
+    rutavideo: Optional[str] = None
+    iframetrailer: Optional[str] = None
+    descripcion: Optional[str] = None
+
 @productos_bp.put("/update_producto/{producto_id}")
-async def update_producto(producto_id: int, producto_update: ProductoCreate, db: Session = Depends(get_db)):
+async def update_producto(producto_id: int, producto_update: ProductoUpdate, db: Session = Depends(get_db)):
     # Check if the product exists
     existing_producto = db.query(Producto).filter(Producto.id == producto_id).first()
     if existing_producto is None:
         raise HTTPException(status_code=404, detail="Product not found")
 
-    # Update the product fields
     existing_producto.producto = producto_update.producto
     existing_producto.precio_unitario = producto_update.precio_unitario
-    existing_producto.id_descuento = producto_update.id_descuento
-    existing_producto.id_plataforma = producto_update.id_plataforma
+
     existing_producto.rutavideo = producto_update.rutavideo
     existing_producto.iframetrailer = producto_update.iframetrailer
     existing_producto.descripcion = producto_update.descripcion
 
-    # Commit the changes to the database
     db.commit()
 
     # Return the updated product

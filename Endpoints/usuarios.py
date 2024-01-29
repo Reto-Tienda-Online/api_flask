@@ -16,11 +16,11 @@ async def get_usuarios(db: Session = Depends(get_db)):
     
 
 class CreateUser(BaseModel):
-    nombre: str
-    apellido: str
-    correo: str
-    contrasena: str
-    admin: bool
+    nombre: Optional[str] = None
+    apellido: Optional[str] = None
+    correo: Optional[str] = None
+    contrasena: Optional[str] = None
+    admin: Optional[bool] = None
     
 @usuarios_bp.post("/register")
 async def create_usuario(user: CreateUser, db: Session = Depends(get_db)):
@@ -46,8 +46,6 @@ async def update_usuario(user_id: int, updated_user: UpdateUser, db: Session = D
 
     if existing_user is None:
         raise HTTPException(status_code=404, detail="User not found")
-
-    # Update user data if the corresponding field in updated_user is not None
     if updated_user.nombre is not None:
         existing_user.nombre = updated_user.nombre
     if updated_user.apellido is not None:
@@ -63,7 +61,7 @@ async def update_usuario(user_id: int, updated_user: UpdateUser, db: Session = D
     db.commit()
     db.refresh(existing_user)
 
-    return {"result": "Usuario updated successfully", "updated_user": existing_user.__dict__}
+    return {"result": "Usuario updated successfully", "updated_user": existing_user.__dict__, "created":"true"}
 
 
 @usuarios_bp.delete("/usuarios/{user_id}")
