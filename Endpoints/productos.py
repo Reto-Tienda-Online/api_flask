@@ -16,7 +16,12 @@ async def buscar_producto(producto: str = Query(None), db: Session = Depends(get
         conditions.append("producto LIKE :producto")
         params["producto"] = f"%{producto}%"
 
-    query = text('SELECT * FROM productos')
+    query = text('''
+        SELECT productos.*, plataforma.plataforma as nombreplataforma
+        FROM productos
+        LEFT JOIN plataforma ON productos.id_plataforma = plataforma.id
+    ''')
+
     
     if conditions:
         query = text(str(query) + " WHERE " + " AND ".join(conditions))
@@ -114,6 +119,7 @@ class ProductoUpdate(BaseModel):
     rutavideo: Optional[str] = None
     iframetrailer: Optional[str] = None
     descripcion: Optional[str] = None
+    
 
 @productos_bp.put("/update_producto/{producto_id}")
 async def update_producto(producto_id: int, producto_update: ProductoUpdate, db: Session = Depends(get_db)):
