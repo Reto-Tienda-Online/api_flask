@@ -128,6 +128,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+
 '''
 
 class APIKeyHeader(BaseModel):
@@ -164,10 +166,11 @@ if __name__ == "__main__":
 
 # Julio Augusto
 
-# Productos --> Nombre Get.  XXXXXXX
-# Que se vea la contraseña en el Get y en el Put  
-# Sacar la plataforma dentro de producto en modo diccionario  XXXXXXXX
+# Delete producto
+# Put producto
 
+
+# Añadir descripciones 
 
 # Diego
 

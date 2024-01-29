@@ -133,9 +133,24 @@ async def update_producto(producto_id: int, producto_update: ProductoUpdate, db:
 
     existing_producto.rutavideo = producto_update.rutavideo
     existing_producto.iframetrailer = producto_update.iframetrailer
-    existing_producto.descripcion = producto_update.descripcion
+  
 
     db.commit()
 
     # Return the updated product
     return existing_producto
+
+
+@productos_bp.delete("/productos/{producto_id}")
+async def delete_producto(producto_id: int, db: Session = Depends(get_db)):
+    # Delete Resenas related to the product
+    db.execute(text("DELETE FROM resena WHERE id_juego = :producto_id"), {"producto_id": producto_id})
+
+    result = db.execute(text("DELETE FROM productos WHERE id = :producto_id"), {"producto_id": producto_id})
+
+    if result.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    db.commit()
+
+    return {"result": "Product deleted successfully", "deleted_producto_id": producto_id}
