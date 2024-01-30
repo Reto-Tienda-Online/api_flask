@@ -8,7 +8,7 @@ resena_bp = APIRouter()
 
 @resena_bp.get("/resena/{juego_id}")
 async def read_resena(juego_id: int, db: Session = Depends(get_db)):
-    resena = db.query(Resena).filter(Resena.id_juego == juego_id).first()
+    resena = db.query(Resena).filter(Resena.id_juego == juego_id).all()
     if resena is None:
         raise HTTPException(status_code=404, detail="Resena not found")
     return resena

@@ -4,6 +4,9 @@ from Models.models import Producto, get_db
 from sqlalchemy import Text, text, and_
 from pydantic import BaseModel
 from typing import Optional
+from fastapi import FastAPI, File, UploadFile
+import shutil
+from pathlib import Path
 
 productos_bp = APIRouter()
 
@@ -110,6 +113,22 @@ async def create_producto(producto_create: ProductoCreate, db: Session = Depends
     db.refresh(new_producto)
 
     return new_producto
+
+
+
+
+upload_dir = Path('C:/Users/Iker/Desktop/UploadedFiles')
+upload_dir.mkdir(exist_ok=True)
+
+@productos_bp.post("/upload")
+async def create_upload_file(id_juego: int, file: UploadFile = File(...)):
+    file_path = upload_dir / str(id_juego) / file.filename
+    file_path.parent.mkdir(parents=True, exist_ok=True)  # Create parent directories if not exist
+
+    with file_path.open("wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    return {"filename": file.filename, "file_path": str(file_path)}
 
 
 class ProductoUpdate(BaseModel):
