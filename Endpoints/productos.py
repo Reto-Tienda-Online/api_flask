@@ -16,7 +16,8 @@ async def buscar_producto(producto: str = Query(None), db: Session = Depends(get
     params = {}
 
     if producto:
-        conditions.append("producto LIKE :producto")
+        # Use ILIKE for case-insensitive pattern matching
+        conditions.append("producto ILIKE :producto")
         params["producto"] = f"%{producto}%"
 
     query = text('''
@@ -25,7 +26,6 @@ async def buscar_producto(producto: str = Query(None), db: Session = Depends(get
         LEFT JOIN plataforma ON productos.id_plataforma = plataforma.id
     ''')
 
-    
     if conditions:
         query = text(str(query) + " WHERE " + " AND ".join(conditions))
 
@@ -33,6 +33,7 @@ async def buscar_producto(producto: str = Query(None), db: Session = Depends(get
     productos_list = [dict(row._asdict()) for row in result.fetchall()]
 
     return productos_list
+
 
 @productos_bp.get("/all_productos")
 async def get_productos(id: int = Query(None), producto: str = Query(None), db: Session = Depends(get_db)):
@@ -78,10 +79,13 @@ async def buscar_producto(producto_id: int = Query(None), db: Session = Depends(
     if conditions:
         query = text(str(query) + " WHERE " + " AND ".join(conditions))
 
+    query = text(str(query) + " ORDER BY valoracion DESC")
+
     result = db.execute(query, params)
     productos_list = [dict(row._asdict()) for row in result.fetchall()]
 
     return productos_list
+
 
 
 
@@ -115,7 +119,7 @@ async def create_producto(producto_create: ProductoCreate, db: Session = Depends
     return new_producto
 
 
-upload_dir = Path('/var/www/web/frontend/reto_final/public/imgs/juegos')
+'''upload_dir = Path('/var/www/web/frontend/reto_final/public/imgs/juegos')
 upload_dir.mkdir(exist_ok=True)
 
 @productos_bp.post("/upload")
@@ -126,7 +130,7 @@ async def create_upload_file(id_juego: int, file: UploadFile = File(...)):
     with file_path.open("wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    return {"filename": file.filename, "file_path": str(file_path)}
+    return {"filename": file.filename, "file_path": str(file_path)}'''
 
 
 class ProductoUpdate(BaseModel):
