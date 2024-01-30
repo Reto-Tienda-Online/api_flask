@@ -115,9 +115,7 @@ async def create_producto(producto_create: ProductoCreate, db: Session = Depends
     return new_producto
 
 
-
-
-upload_dir = Path('C:/Users/Iker/Desktop/UploadedFiles')
+upload_dir = Path('/var/www/web/frontend/reto_final/public/imgs/juegos')
 upload_dir.mkdir(exist_ok=True)
 
 @productos_bp.post("/upload")
