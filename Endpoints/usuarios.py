@@ -20,7 +20,7 @@ class CreateUser(BaseModel):
     apellido: Optional[str] = None
     correo: Optional[str] = None
     contrasena: Optional[str] = None
-    admin: Optional[bool] = None
+    admin: Optional[bool] = False
     
 @usuarios_bp.post("/register")
 async def create_usuario(user: CreateUser, db: Session = Depends(get_db)):

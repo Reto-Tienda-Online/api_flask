@@ -37,17 +37,19 @@ async def get_productos(id: int = Query(None), producto: str = Query(None), db: 
     params = {}
 
     if id is not None:
-        conditions.append("id = :id")
+        conditions.append("productos.id = :id")
         params['id'] = id
 
     if producto is not None:
-        conditions.append("producto = :producto")
+        conditions.append("productos.producto = :producto")
         params['producto'] = producto
 
     query = text('''
-        SELECT productos.*, plataforma.plataforma as nombreplataforma
+        SELECT productos.*, plataforma.plataforma as nombreplataforma, categorias.categoria as nombrecategoria
         FROM productos
         LEFT JOIN plataforma ON productos.id_plataforma = plataforma.id
+        LEFT JOIN producto_categoria ON productos.id = producto_categoria.id_producto
+        LEFT JOIN categorias ON producto_categoria.id_categoria = categorias.id
     ''')
 
     if conditions:
@@ -57,7 +59,6 @@ async def get_productos(id: int = Query(None), producto: str = Query(None), db: 
     productos_list = [dict(row._asdict()) for row in result.fetchall()]
 
     return productos_list
-
 
 
 @productos_bp.get("/productoresena")
@@ -123,7 +124,6 @@ class ProductoUpdate(BaseModel):
 
 @productos_bp.put("/update_producto/{producto_id}")
 async def update_producto(producto_id: int, producto_update: ProductoUpdate, db: Session = Depends(get_db)):
-    # Check if the product exists
     existing_producto = db.query(Producto).filter(Producto.id == producto_id).first()
     if existing_producto is None:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -137,13 +137,11 @@ async def update_producto(producto_id: int, producto_update: ProductoUpdate, db:
 
     db.commit()
 
-    # Return the updated product
     return existing_producto
 
 
 @productos_bp.delete("/productos/{producto_id}")
 async def delete_producto(producto_id: int, db: Session = Depends(get_db)):
-    # Delete Resenas related to the product
     db.execute(text("DELETE FROM resena WHERE id_juego = :producto_id"), {"producto_id": producto_id})
 
     result = db.execute(text("DELETE FROM productos WHERE id = :producto_id"), {"producto_id": producto_id})

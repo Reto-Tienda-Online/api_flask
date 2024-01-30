@@ -170,7 +170,7 @@ if __name__ == "__main__":
 # Put producto
 
 
-# Añadir descripciones 
+
 
 # Diego
 
