@@ -11,6 +11,7 @@ class DescuentoOut(BaseModel):
     id: int
 class PlataformaOut(BaseModel):
     id: int
+    plataforma: str
 
 class ProductoOut(BaseModel):
     id: int
