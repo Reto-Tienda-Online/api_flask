@@ -19,34 +19,35 @@ INSERT INTO productos (producto, precio_unitario, id_descuento, id_plataforma, r
     ('God of War', '49.99', 3, 2, '/imgs/18/1.webm', 'https://www.youtube.com/watch?v=jb0LtQBNqhY', 'Descripción de God of War'),
     ('Metroid Prime', '44.99', 4, 3, '/imgs/19/1.webm', 'https://www.youtube.com/watch?v=PW4a7ZvqRaw', 'Descripción de Metroid Prime'),
     ('Mass Effect 2', '34.99', 5, 4, '/imgs/20/1.webm', 'https://www.youtube.com/watch?v=xNcmIsPdqBw', 'Descripción de Mass Effect 2');
-'''
-21) The Witcher 3 Wild Hunt
-22) Street Fighter
-23) Divinity Original Sin
-24) Uncharted 4
-25) AstroBot
-26) Ori and the Wild of the Wisps
-27) Operation Flashpoint
-28) Dota 2
-29) League of Legends
-30) Rise Son of Rome
-31) Dark Souls
-32) Final Fantasy XIV
-33) Fez
-34) Bloodborne
-35) Dragon Age Inquisition
-36) Crysis
-37) Fallout 3
-38) Mortal Combat
-39) Resident Evil 2 Remastered
-40) Dead Cells
-41) Metal Gear Solid V
-42) Max Payne
-43) Doom Eternal
-44) Dead Space
-45) Monster Hunter World
-46) Warcraft 3
-47) Batman Arkham City
-48) Minecraftd
-49) Halo Combat Evolved
-50) Fortnite'''
+INSERT INTO productos (producto, precio_unitario, id_descuento, id_plataforma, rutavideo, iframetrailer, descripcion)
+VALUES
+    ('The Witcher 3 Wild Hunt', 48.99 , 1, 1, 'ruta_video_witcher', 'iframe_witcher', 'Descripción The Witcher 3 Wild Hunt'),
+    ('Street Fighter', 24.99 ,1, 2, 'ruta_video_street_fighter', 'iframe_street_fighter', 'Descripción Street Fighter'),
+    ('Divinity Original Sin', 9.99 ,1, 3, 'ruta_video_divinity', 'iframe_divinity', 'Descripción Divinity Original Sin'),
+    ('Uncharted 4', 18.46 ,1, 4, 'ruta_video_uncharted', 'iframe_uncharted', 'Descripción Uncharted 4'),
+    ('AstroBot', 5.99 ,1, 5, 'ruta_video_astrobot', 'iframe_astrobot', 'Descripción AstroBot'),
+    ('Ori and the Wild of the Wisps', 28.55 ,1, 6, 'ruta_video_ori', 'iframe_ori', 'Descripción Ori and the Wild of the Wisps'),
+    ('Operation Flashpoint', 56.85 ,1, 7, 'ruta_video_operation_flashpoint', 'iframe_operation_flashpoint', 'Descripción Operation Flashpoint'),
+    ('Dota 2', 15.99 ,1, 8, 'ruta_video_dota2', 'iframe_dota2', 'Descripción Dota 2'),
+    ('League of Legends', 15.99 ,1, 9, 'ruta_video_lol', 'iframe_lol', 'Descripción League of Legends'),
+    ('Rise Son of Rome', 8.99 , 1, 1, 'ruta_video_rise_son_of_rome', 'iframe_rise_son_of_rome', 'Descripción Rise Son of Rome'),
+    ('Dark Souls', 12.99 , 1, 2, 'ruta_video_dark_souls', 'iframe_dark_souls', 'Descripción Dark Souls'),
+    ('Final Fantasy XIV', 50.12 , 1, 3, 'ruta_video_final_fantasy_xiv', 'iframe_final_fantasy_xiv', 'Descripción Final Fantasy XIV'),
+    ('Fez', 10.65 , 1, 4, 'ruta_video_fez', 'iframe_fez', 'Descripción Fez'),
+    ('Bloodborne', 64.55 , 1, 5, 'ruta_video_bloodborne', 'iframe_bloodborne', 'Descripción Bloodborne'),
+    ('Dragon Age Inquisition', 75.15 , 1, 6, 'ruta_video_dragon_age_inquisition', 'iframe_dragon_age_inquisition', 'Descripción Dragon Age Inquisition'),
+    ('Crysis', 5.99 , 1, 7, 'ruta_video_crysis', 'iframe_crysis', 'Descripción Crysis'),
+    ('Fallout 3', 45.24 , 1, 8, 'ruta_video_fallout3', 'iframe_fallout3', 'Descripción Fallout 3'),
+    ('Mortal Kombat', 64.99 , 1, 9, 'ruta_video_mortal_kombat', 'iframe_mortal_kombat', 'Descripción Mortal Kombat'),
+    ('Resident Evil 2 Remastered', 52.85 , 1, 1, 'ruta_video_resident_evil_2', 'iframe_resident_evil_2', 'Descripción Resident Evil 2 Remastered'),
+    ('Dead Cells', 26.84 , 1, 2, 'ruta_video_dead_cells', 'iframe_dead_cells', 'Descripción Dead Cells'),
+    ('Metal Gear Solid V', 33.99 , 1, 3, 'ruta_video_metal_gear_solid_v', 'iframe_metal_gear_solid_v', 'Descripción Metal Gear Solid V'),
+    ('Max Payne', 2.99 , 1, 4, 'ruta_video_max_payne', 'iframe_max_payne', 'Descripción Max Payne'),
+    ('Doom Eternal', 4.99 , 1, 5, 'ruta_video_doom_eternal', 'iframe_doom_eternal', 'Descripción Doom Eternal'),
+    ('Dead Space', 12.99 , 1, 6, 'ruta_video_dead_space', 'iframe_dead_space', 'Descripción Dead Space'),
+    ('Monster Hunter World', 27.57 , 1, 7, 'ruta_video_monster_hunter_world', 'iframe_monster_hunter_world', 'Descripción Monster Hunter World'),
+    ('Warcraft 3', 72.56 , 1, 8, 'ruta_video_warcraft3', 'iframe_warcraft3', 'Descripción Warcraft 3'),
+    ('Batman Arkham City', 24.78, 1, 9, 'ruta_video_batman_arkham_city', 'iframe_batman_arkham_city', 'Descripción Batman Arkham City'),
+    ('Minecraft', 1.99 , 1, 1, 'ruta_video_minecraft', 'iframe_minecraft', 'Descripción Minecraft'),
+    ('Halo Combat Evolved', 15.99 , 1, 2, 'ruta_video_halo_combat_evolved', 'iframe_halo_combat_evolved', 'Descripción Halo Combat Evolved'),
+    ('Fortnite', 50.85 , 1, 3, 'ruta_video_fortnite', 'iframe_fortnite', 'Descripción Fortnite');
