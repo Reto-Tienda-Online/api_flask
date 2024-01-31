@@ -54,7 +54,6 @@ class Usuario(db.Model):
 class Producto(db.Model):
     __tablename__ = "productos"
     id = Column(Integer, primary_key=True)
-    # ventas = Column(Integer, nullable=True)
     producto = Column(String(255), nullable=False)
     precio_unitario = Column(String(255), nullable=False)
     id_descuento = Column(Integer, ForeignKey('descuentos.id'), nullable=False)

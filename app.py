@@ -23,6 +23,7 @@ from Endpoints.transacciones import transacciones_bp
 from Endpoints.transaccionproducto import transaccionproducto_bp
 from Endpoints.usuarios import usuarios_bp, Usuario
 from Endpoints.logos import logos_bp
+from Endpoints.stripe import stripe_bp
 from Models.models import db, get_db
 from fastapi import FastAPI, Depends
 from jose import JWTError, jwt
@@ -112,7 +113,7 @@ routers = [descuentos_bp, categorias_bp, productoresena_bp,
 productos_bp,productoscategorias_bp, usuarios_bp, 
 maquinas_bp, plataforma_bp, productos_bp, imagenes_bp,
 logos_bp, carrocompra_bp, listadeseo_bp, metodopago_bp,
-resena_bp, transacciones_bp, transaccionproducto_bp]
+resena_bp, transacciones_bp, transaccionproducto_bp, stripe_bp]
 
 
 for router in routers:

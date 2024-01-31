@@ -19,3 +19,34 @@ INSERT INTO productos (producto, precio_unitario, id_descuento, id_plataforma, r
     ('God of War', '49.99', 3, 2, '/imgs/18/1.webm', 'https://www.youtube.com/watch?v=jb0LtQBNqhY', 'Descripción de God of War'),
     ('Metroid Prime', '44.99', 4, 3, '/imgs/19/1.webm', 'https://www.youtube.com/watch?v=PW4a7ZvqRaw', 'Descripción de Metroid Prime'),
     ('Mass Effect 2', '34.99', 5, 4, '/imgs/20/1.webm', 'https://www.youtube.com/watch?v=xNcmIsPdqBw', 'Descripción de Mass Effect 2');
+'''
+21) The Witcher 3 Wild Hunt
+22) Street Fighter
+23) Divinity Original Sin
+24) Uncharted 4
+25) AstroBot
+26) Ori and the Wild of the Wisps
+27) Operation Flashpoint
+28) Dota 2
+29) League of Legends
+30) Rise Son of Rome
+31) Dark Souls
+32) Final Fantasy XIV
+33) Fez
+34) Bloodborne
+35) Dragon Age Inquisition
+36) Crysis
+37) Fallout 3
+38) Mortal Combat
+39) Resident Evil 2 Remastered
+40) Dead Cells
+41) Metal Gear Solid V
+42) Max Payne
+43) Doom Eternal
+44) Dead Space
+45) Monster Hunter World
+46) Warcraft 3
+47) Batman Arkham City
+48) Minecraftd
+49) Halo Combat Evolved
+50) Fortnite'''
