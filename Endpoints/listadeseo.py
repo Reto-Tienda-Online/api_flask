@@ -1,21 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from Models.models import ListaDeseos, get_db
 from sqlalchemy import Text, text
 from typing import Optional, List
 from pydantic import BaseModel
-
-'''
-class ListaDeseos(db.Model):
-    __tablename__ = "listadeseos"
-    id = Column(Integer, primary_key=True)
-    id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
-    id_producto = Column(Integer, ForeignKey('productos.id'), nullable=False)
-    favorito = Column(Boolean, nullable=False)
-
-    usuario = relationship("Usuario")
-    producto = relationship("Producto")
-'''
 
 listadeseo_bp = APIRouter()
 
@@ -60,7 +48,7 @@ async def get_listadeseo(id_usuario: int, db: Session = Depends(get_db)):
 
 @listadeseo_bp.post("/listadeseo", response_model=ListaDeseoOut)
 async def create_listadeseo(carrocompra: ListaDeseoCreate, db: Session = Depends(get_db)):
-    new_listadeseo = ListaDeseos(**carrocompra.dict(), isdeleted=False)
+    new_listadeseo = ListaDeseos(**carrocompra.dict())
     db.add(new_listadeseo)
     db.commit()
     db.refresh(new_listadeseo)
@@ -78,3 +66,29 @@ async def delete_categoria(listadeseo_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"result": "Producto deleted successfully", "deleted_categoria": existing_listadeseo.__dict__}
+
+
+
+class ListaDeseoUpdate(BaseModel):
+    id_usuario: Optional[int] = None
+    id_producto: Optional[int] = None
+    favorito: Optional[bool] = None
+
+    # Add other fields that can be updated
+
+
+@listadeseo_bp.put("/listadeseo/{listadeseo_id}", response_model=ListaDeseoOut)
+async def update_carrocompra(listadeseo_id: int, listadeseo_update: ListaDeseoUpdate, db: Session = Depends(get_db)):
+    existing_listadeseo = db.query(ListaDeseos).filter(ListaDeseos.id == listadeseo_id).first()
+
+    if existing_listadeseo is None:
+        raise HTTPException(status_code=404, detail="Carrocompra not found")
+
+    # Update fields based on the provided data
+    for field, value in listadeseo_update.dict(exclude_unset=True).items():
+        setattr(existing_listadeseo, field, value)
+
+    db.commit()
+    db.refresh(existing_listadeseo)
+
+    return existing_listadeseo

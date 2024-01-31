@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from Models.models import CarroCompra, get_db
 from sqlalchemy import Text, text
@@ -70,3 +70,25 @@ async def delete_categoria(carrocompra_id: int, db: Session = Depends(get_db)):
 
     return {"result": "Producto deleted successfully", "deleted_categoria": existing_carrocompra.__dict__}
 
+class CarroCompraUpdate(BaseModel):
+    id_usuario: Optional[int] = None
+    id_producto: Optional[int] = None
+    pagado: Optional[bool] = None
+    cantidad: Optional[int] = None
+    # Add other fields that can be updated
+
+@carrocompra_bp.put("/carrocompra/{carrocompra_id}", response_model=CarroCompraOut)
+async def update_carrocompra(carrocompra_id: int, carrocompra_update: CarroCompraUpdate, db: Session = Depends(get_db)):
+    existing_carrocompra = db.query(CarroCompra).filter(CarroCompra.id == carrocompra_id).first()
+
+    if existing_carrocompra is None:
+        raise HTTPException(status_code=404, detail="Carrocompra not found")
+
+    # Update fields based on the provided data
+    for field, value in carrocompra_update.dict(exclude_unset=True).items():
+        setattr(existing_carrocompra, field, value)
+
+    db.commit()
+    db.refresh(existing_carrocompra)
+
+    return existing_carrocompra
