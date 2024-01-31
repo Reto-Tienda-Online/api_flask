@@ -132,9 +132,7 @@ class Transaccion(db.Model):
     id = Column(Integer, primary_key=True)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
     id_metodopago = Column(Integer, ForeignKey('metodopago.id'), nullable=False)
-    # id_carrocompra = Column(Integer, ForeignKey('carrocompra.id'), nullable=False)
-    importe = Column(Double, nullable=False) # LA SUMA DE TODOS LOS JUEGOS DENTRO DEL CARROCOMPRA
-    # WHERE IS NOT DELETED AND IS NOT    /////// HACERLO DENTRO DEL POST
+    importe = Column(Double, nullable=False) 
     fechahora = Column(DateTime(timezone=True), nullable=False)
     
     usuario = relationship("Usuario")

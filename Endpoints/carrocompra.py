@@ -34,7 +34,7 @@ class CarroCompraCreate(BaseModel):
     id_usuario: int
     id_producto: int
     pagado: Optional[bool] = False
-    cantidad: int
+    cantidad: Optional[int] = 1
 
 from sqlalchemy.orm import joinedload
 
@@ -69,3 +69,4 @@ async def delete_categoria(carrocompra_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"result": "Producto deleted successfully", "deleted_categoria": existing_carrocompra.__dict__}
+
