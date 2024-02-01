@@ -9,8 +9,10 @@ listadeseo_bp = APIRouter()
 
 class DescuentoOut(BaseModel):
     id: int
+    descuento: str
 class PlataformaOut(BaseModel):
     id: int
+    plataforma: str
 
 class ProductoOut(BaseModel):
     id: int
@@ -56,7 +58,7 @@ async def create_listadeseo(carrocompra: ListaDeseoCreate, db: Session = Depends
 
 
 @listadeseo_bp.delete("/listadeseo/{listadeseo_id}")
-async def delete_categoria(listadeseo_id: int, db: Session = Depends(get_db)):
+async def delete_listadeseo(listadeseo_id: int, db: Session = Depends(get_db)):
     existing_listadeseo = db.query(ListaDeseos).filter(ListaDeseos.id == listadeseo_id).first()
 
     if existing_listadeseo is None:
@@ -65,8 +67,7 @@ async def delete_categoria(listadeseo_id: int, db: Session = Depends(get_db)):
     db.delete(existing_listadeseo)
     db.commit()
 
-    return {"result": "Producto deleted successfully", "deleted_categoria": existing_listadeseo.__dict__}
-
+    return {"result": "Listadeseo deleted successfully", "deleted_listadeseo": existing_listadeseo.__dict__}
 
 
 class ListaDeseoUpdate(BaseModel):
@@ -74,17 +75,14 @@ class ListaDeseoUpdate(BaseModel):
     id_producto: Optional[int] = None
     favorito: Optional[bool] = None
 
-    # Add other fields that can be updated
-
 
 @listadeseo_bp.put("/listadeseo/{listadeseo_id}", response_model=ListaDeseoOut)
 async def update_carrocompra(listadeseo_id: int, listadeseo_update: ListaDeseoUpdate, db: Session = Depends(get_db)):
     existing_listadeseo = db.query(ListaDeseos).filter(ListaDeseos.id == listadeseo_id).first()
 
     if existing_listadeseo is None:
-        raise HTTPException(status_code=404, detail="Carrocompra not found")
+        raise HTTPException(status_code=404, detail="Listadeseo not found")
 
-    # Update fields based on the provided data
     for field, value in listadeseo_update.dict(exclude_unset=True).items():
         setattr(existing_listadeseo, field, value)
 

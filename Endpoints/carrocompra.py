@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from Models.models import CarroCompra, get_db
-from sqlalchemy import Text, text
+from sqlalchemy import Text, text, Null
 from pydantic import BaseModel
 from typing import List, Optional
 

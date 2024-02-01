@@ -107,7 +107,7 @@ class Imagen(db.Model):
    
     producto = relationship("Producto")
 
-class MetodoPago(db.Model):
+'''class MetodoPago(db.Model):      TABLA ANTIGUA
     __tablename__ = "metodopago"
     id = Column(Integer, primary_key=True)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
@@ -120,12 +120,15 @@ class MetodoPago(db.Model):
     fecha_caduc = Column(Integer, nullable=False)
     
     tipopago = relationship("TipoPago")
-    usuario = relationship("Usuario")
+    usuario = relationship("Usuario")'''
     
-class TipoPago(db.Model):
-    __tablename__="tipopago"
+class MetodoPago(db.Model):
+    __tablename__ = "metodopago"
     id = Column(Integer, primary_key=True)
-    tipopago = Column(String(50), nullable=False)
+    tipo = Column(String(50), nullable=False)
+
+    
+    
 
 class Transaccion(db.Model):
     __tablename__ = "transaccion"
@@ -137,7 +140,7 @@ class Transaccion(db.Model):
     
     usuario = relationship("Usuario")
     metodopago = relationship("MetodoPago")
-    # carrocompra = relationship("CarroCompra")
+  
     
 class TransaccionProducto(db.Model):
     __tablename__ = "transacionproducto"

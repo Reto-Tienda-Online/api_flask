@@ -26,12 +26,10 @@ async def process_payment(data: dict):
             amount=amount,
             currency=currency,
             source=token,
-            description="Payment for FastAPI Store",
+            description="Payment for Game Groove Store",
         )
 
-        # Handle the charge object as per your requirements
-
-        # Return a success response
+        
         return {"status": "success", "charge_id": charge.id}
 
     except stripe.error.CardError as e:

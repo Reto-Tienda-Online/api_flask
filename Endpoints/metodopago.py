@@ -4,3 +4,4 @@ from Models.models import MetodoPago, get_db
 from sqlalchemy import Text, text
 
 metodopago_bp = APIRouter()
+
