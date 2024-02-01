@@ -18,7 +18,6 @@ def create_transaction_and_products(db: Session, id_usuario: int):
     if not shopping_cart_items:
         raise HTTPException(status_code=404, detail="Shopping cart is empty")
 
-    # Calculate the total price and create a transaction
     total_price = sum(float(item.producto.precio_unitario) * item.cantidad for item in shopping_cart_items)
     transaction = Transaccion(
         id_usuario=id_usuario,
@@ -30,7 +29,6 @@ def create_transaction_and_products(db: Session, id_usuario: int):
     db.commit()
     db.refresh(transaction)
 
-    # Create entries in the TransaccionProducto table
     for item in shopping_cart_items:
         transaction_product = TransaccionProducto(
             id_transaccion=transaction.id,
@@ -40,7 +38,6 @@ def create_transaction_and_products(db: Session, id_usuario: int):
         )
         db.add(transaction_product)
 
-    # Mark the items as paid
     for item in shopping_cart_items:
         item.pagado = True
 
