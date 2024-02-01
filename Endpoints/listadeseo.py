@@ -9,7 +9,7 @@ listadeseo_bp = APIRouter()
 
 class DescuentoOut(BaseModel):
     id: int
-    descuento: str
+    descuento: int
 class PlataformaOut(BaseModel):
     id: int
     plataforma: str
@@ -56,18 +56,28 @@ async def create_listadeseo(carrocompra: ListaDeseoCreate, db: Session = Depends
     db.refresh(new_listadeseo)
     return new_listadeseo
 
-
-@listadeseo_bp.delete("/listadeseo/{listadeseo_id}")
-async def delete_listadeseo(listadeseo_id: int, db: Session = Depends(get_db)):
-    existing_listadeseo = db.query(ListaDeseos).filter(ListaDeseos.id == listadeseo_id).first()
+@listadeseo_bp.delete("/listadeseo/{id_usuario}/{id_producto}")
+async def delete_listadeseo(id_usuario: int, id_producto: int, db: Session = Depends(get_db)):
+    existing_listadeseo = db.query(ListaDeseos).filter(
+        ListaDeseos.id_usuario == id_usuario,
+        ListaDeseos.id_producto == id_producto
+    ).first()
 
     if existing_listadeseo is None:
-        return {"error": "Listadeseo not found"}
+        raise HTTPException(status_code=404, detail="Listadeseo not found")
+
+    deleted_listadeseo = {
+        "id": existing_listadeseo.id,
+        "id_usuario": existing_listadeseo.id_usuario,
+        "id_producto": existing_listadeseo.id_producto
+        # Add other necessary attributes
+    }
 
     db.delete(existing_listadeseo)
     db.commit()
 
-    return {"result": "Listadeseo deleted successfully", "deleted_listadeseo": existing_listadeseo.__dict__}
+    return {"result": "Listadeseo deleted successfully", **deleted_listadeseo}
+
 
 
 class ListaDeseoUpdate(BaseModel):
