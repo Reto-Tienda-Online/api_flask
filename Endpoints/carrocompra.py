@@ -62,13 +62,10 @@ async def create_carrocompra(carrocompra: CarroCompraCreate, db: Session = Depen
 @carrocompra_bp.delete("/carrocompra/{carrocompra_id}")
 async def delete_categoria(carrocompra_id: int, db: Session = Depends(get_db)):
     existing_carrocompra = db.query(CarroCompra).filter(CarroCompra.id == carrocompra_id).first()
-
     if existing_carrocompra is None:
         return {"error": "Carrocompra not found"}
-
     db.delete(existing_carrocompra)
     db.commit()
-
     return {"result": "Producto deleted successfully", "deleted_categoria": existing_carrocompra.__dict__}
 
 class CarroCompraUpdate(BaseModel):
@@ -76,7 +73,6 @@ class CarroCompraUpdate(BaseModel):
     id_producto: Optional[int] = None
     pagado: Optional[bool] = None
     cantidad: Optional[int] = None
-    # Add other fields that can be updated
 
 @carrocompra_bp.put("/carrocompra/{carrocompra_id}", response_model=CarroCompraOut)
 async def update_carrocompra(carrocompra_id: int, carrocompra_update: CarroCompraUpdate, db: Session = Depends(get_db)):
@@ -85,7 +81,6 @@ async def update_carrocompra(carrocompra_id: int, carrocompra_update: CarroCompr
     if existing_carrocompra is None:
         raise HTTPException(status_code=404, detail="Carrocompra not found")
 
-    # Update fields based on the provided data
     for field, value in carrocompra_update.dict(exclude_unset=True).items():
         setattr(existing_carrocompra, field, value)
 
@@ -93,3 +88,4 @@ async def update_carrocompra(carrocompra_id: int, carrocompra_update: CarroCompr
     db.refresh(existing_carrocompra)
 
     return existing_carrocompra
+

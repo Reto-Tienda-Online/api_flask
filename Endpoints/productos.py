@@ -65,6 +65,43 @@ async def get_productos(id: int = Query(None), producto: str = Query(None), db: 
     return productos_list
 
 
+
+@productos_bp.get("/all_productos_usuario")
+async def get_productos(id_usuario: int, id: int = Query(None), producto: str = Query(None), db: Session = Depends(get_db)):
+    conditions = []
+    params = {'id_usuario': id_usuario}
+
+    if id is not None:
+        conditions.append("productos.id = :id")
+        params['id'] = id
+
+    if producto is not None:
+        conditions.append("productos.producto = :producto")
+        params['producto'] = producto
+
+    query = text('''
+        SELECT 
+            productos.*, 
+            plataforma.plataforma as nombreplataforma, 
+            categorias.categoria as nombrecategoria,
+            CASE WHEN listadeseos.id_producto IS NOT NULL THEN True ELSE False END as favorito
+        FROM productos
+        LEFT JOIN plataforma ON productos.id_plataforma = plataforma.id
+        LEFT JOIN producto_categoria ON productos.id = producto_categoria.id_producto
+        LEFT JOIN categorias ON producto_categoria.id_categoria = categorias.id
+        LEFT JOIN listadeseos ON productos.id = listadeseos.id_producto
+        WHERE listadeseos.id_usuario = :id_usuario OR listadeseos.id_usuario IS NULL
+    ''')
+
+    if conditions:
+        query = text(str(query) + " AND " + " AND ".join(conditions))
+
+    result = db.execute(query, params)
+    productos_list = [dict(row._asdict()) for row in result.fetchall()]
+
+    return productos_list
+
+
 @productos_bp.get("/productoresena")
 async def buscar_producto(producto_id: int = Query(None), db: Session = Depends(get_db)):
     conditions = []

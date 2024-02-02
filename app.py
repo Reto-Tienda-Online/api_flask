@@ -139,7 +139,6 @@ class APIKeyHeader(BaseModel):
 
 apikey = "apikey"
 
-
 @app.middleware("http")
 async def api_key_middleware(request: Request, call_next):
     
@@ -156,26 +155,9 @@ async def startup_db_client():
     
     app.state.api_key = apikey
 
-
 '''
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
-
-
-
-# Julio Augusto
-
-# Delete producto
-# Put producto
-
-
-
-
-# Diego
-
-# Get de ProductosCategorias
-# Lo mismo para las plataformas
-# Recibir 3 reseñas dentro del producto
 
