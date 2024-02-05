@@ -62,7 +62,7 @@ async def read_compras_by_usuario(id_usuario: int, db: Session = Depends(get_db)
             'id_producto': result.id,
             'producto': result.producto,
             'cantidad': result.cantidad,
-            'importe': result.importe,
+            'importe': (result.importe * result.cantidad),
             'fechacompra': result.fechahora
         }
         for result in results
