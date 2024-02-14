@@ -1,12 +1,10 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from Models.models import Categoria, get_db
-from sqlalchemy import Text, text
-from typing import List
+from sqlalchemy import text
+
 
 categorias_bp = APIRouter()
-
-# GET REQUEST
 
 
 from fastapi import Query
@@ -33,8 +31,6 @@ async def get_categorias(id: int = Query(None), categoria: str = Query(None), db
 
     return categorias_list
 
-# POST REQUEST
-
 @categorias_bp.post("/categorias")
 async def create_categoria(categoria: dict, db: Session = Depends(get_db)):
     new_categoria = Categoria(**categoria)
@@ -43,8 +39,6 @@ async def create_categoria(categoria: dict, db: Session = Depends(get_db)):
     db.refresh(new_categoria)
     
     return {"result": "Categoria created successfully", **categoria}
-
-# PUT REQUEST
 
 @categorias_bp.put("/categorias/{categoria_id}")
 async def update_categoria(categoria_id: int, updated_categoria: dict, db: Session = Depends(get_db)):
@@ -60,8 +54,6 @@ async def update_categoria(categoria_id: int, updated_categoria: dict, db: Sessi
     db.refresh(existing_categoria)
 
     return {"result": "Categoria updated successfully", "updated_categoria": existing_categoria.__dict__}
-
-# DELETE REQUEST
 
 @categorias_bp.delete("/categorias/{categoria_id}")
 async def delete_categoria(categoria_id: int, db: Session = Depends(get_db)):

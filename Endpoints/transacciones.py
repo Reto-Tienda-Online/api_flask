@@ -6,8 +6,6 @@ from sqlalchemy.sql import func
 
 transacciones_bp = APIRouter()
 
-
-
 def create_transaction_and_products(db: Session, id_usuario: int):
     shopping_cart_items = db.query(CarroCompra).filter(
         CarroCompra.id_usuario == id_usuario,
@@ -45,7 +43,6 @@ def create_transaction_and_products(db: Session, id_usuario: int):
 
     return transaction
 
-# Example usage in FastAPI endpoint
 @transacciones_bp.post("/process_transaction/{id_usuario}")
 async def process_transaction(id_usuario: int, db: Session = Depends(get_db)):
     transaction = create_transaction_and_products(db, id_usuario)

@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from Models.models import ListaDeseos, get_db
-from sqlalchemy import Text, text
 from typing import Optional, List
 from pydantic import BaseModel
 
@@ -70,7 +69,6 @@ async def delete_listadeseo(id_usuario: int, id_producto: int, db: Session = Dep
         "id": existing_listadeseo.id,
         "id_usuario": existing_listadeseo.id_usuario,
         "id_producto": existing_listadeseo.id_producto
-        # Add other necessary attributes
     }
 
     db.delete(existing_listadeseo)

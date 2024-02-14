@@ -53,7 +53,6 @@ async def update_usuario(user_id: int, updated_user: UpdateUser, db: Session = D
     if updated_user.correo is not None:
         existing_user.correo = updated_user.correo
     if updated_user.contrasena is not None:
-        # Hash and update password only if a new password is provided
         existing_user.contrasena = bcrypt.hash(updated_user.contrasena)
     if updated_user.admin is not None:
         existing_user.admin = updated_user.admin
@@ -66,10 +65,8 @@ async def update_usuario(user_id: int, updated_user: UpdateUser, db: Session = D
 
 @usuarios_bp.delete("/usuarios/{user_id}")
 async def delete_usuario(user_id: int, db: Session = Depends(get_db)):
-    # Delete Resenas related to the user
     db.execute(text("DELETE FROM resena WHERE id_usuario = :user_id"), {"user_id": user_id})
 
-    # Delete the Usuario
     result = db.execute(text("DELETE FROM usuarios WHERE id = :user_id"), {"user_id": user_id})
 
     if result.rowcount == 0:

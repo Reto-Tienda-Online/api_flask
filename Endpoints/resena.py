@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
-from Models.models import Resena, get_db, Usuario, Producto
-from sqlalchemy import Text, text
+from Models.models import Resena, get_db, Usuario
+
 
 resena_bp = APIRouter()
 

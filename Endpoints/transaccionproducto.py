@@ -71,8 +71,6 @@ async def read_compras_by_usuario(id_usuario: int, db: Session = Depends(get_db)
     return purchases_by_user
 
 
-
-
 @transaccionproducto_bp.get("/compras_by_fecha/{id_producto}")
 async def read_compras_by_fecha(id_producto: int, fechainicio: str, fechafin: str, db: Session = Depends(get_db)):
     results = (
@@ -82,7 +80,7 @@ async def read_compras_by_fecha(id_producto: int, fechainicio: str, fechafin: st
             TransaccionProducto.id_transaccion,
             func.sum(TransaccionProducto.cantidad).label('cantidad'),
             func.sum(TransaccionProducto.precio).label('importe'),
-            func.max(Transaccion.fechahora).label('fechacompra')  # Use an aggregate function for fechacompra
+            func.max(Transaccion.fechahora).label('fechacompra')  
         )
         .join(TransaccionProducto, Producto.id == TransaccionProducto.id_producto)
         .join(Transaccion, TransaccionProducto.id_transaccion == Transaccion.id)

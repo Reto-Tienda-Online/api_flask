@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from Models.models import Producto, get_db
-from sqlalchemy import Text, text, and_
+from sqlalchemy import text
 from pydantic import BaseModel
 from typing import Optional
-from fastapi import FastAPI, File, UploadFile
-import shutil
-from pathlib import Path
+
+
 
 productos_bp = APIRouter()
 
@@ -16,7 +15,6 @@ async def buscar_producto(producto: str = Query(None), db: Session = Depends(get
     params = {}
 
     if producto:
-        # Use ILIKE for case-insensitive pattern matching
         conditions.append("producto ILIKE :producto")
         params["producto"] = f"%{producto}%"
 
@@ -123,10 +121,6 @@ async def buscar_producto(producto_id: int = Query(None), db: Session = Depends(
 
     return productos_list
 
-
-
-
-
 class ProductoCreate(BaseModel):
     producto: str
     precio_unitario: str
@@ -192,7 +186,6 @@ async def update_producto(producto_id: int, producto_update: ProductoUpdate, db:
     existing_producto.rutavideo = producto_update.rutavideo
     existing_producto.iframetrailer = producto_update.iframetrailer
   
-
     db.commit()
 
     return existing_producto

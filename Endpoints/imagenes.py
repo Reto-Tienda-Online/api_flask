@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from Models.models import Imagen, get_db
-from sqlalchemy import Text, text
+from Models.models import get_db
+from sqlalchemy import text
 
 imagenes_bp = APIRouter()
 

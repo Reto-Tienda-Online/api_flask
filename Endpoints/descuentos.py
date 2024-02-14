@@ -1,11 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from Models.models import Descuento, get_db
-from sqlalchemy import Text, text
+from sqlalchemy import text
 
 descuentos_bp = APIRouter()
-
-# GET REQUEST
 
 @descuentos_bp.get("/all_descuentos")
 async def get_descuentos(db: Session = Depends(get_db)):
@@ -15,9 +13,6 @@ async def get_descuentos(db: Session = Depends(get_db)):
 
     return descuentos_list
 
-
-# POST REQUEST
-
 @descuentos_bp.post("/descuentos")
 async def create_descuento(descuento: dict, db: Session = Depends(get_db)):
     new_descuento = Descuento(**descuento)
@@ -26,8 +21,6 @@ async def create_descuento(descuento: dict, db: Session = Depends(get_db)):
     db.refresh(new_descuento)
     
     return {"result": "Descuento created successfully", **descuento}
-
-# PUT REQUEST
 
 @descuentos_bp.put("/descuentos/{descuento_id}")
 async def update_descuento(descuento_id: int, updated_descuento: dict, db: Session = Depends(get_db)):
@@ -43,8 +36,6 @@ async def update_descuento(descuento_id: int, updated_descuento: dict, db: Sessi
     db.refresh(existing_descuento)
 
     return {"result": "Descuento updated successfully", "updated_descuento": existing_descuento.__dict__}
-
-# DELETE REQUEST
 
 @descuentos_bp.delete("/descuentos/{descuento_id}")
 async def delete_descuento(descuento_id: int, db: Session = Depends(get_db)):

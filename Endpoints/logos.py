@@ -1,12 +1,9 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from Models.models import Logos, get_db
-from sqlalchemy import Text, text
+from Models.models import get_db
+from sqlalchemy import text
 
 logos_bp = APIRouter()
-
-# /imgs/logos/blizzard.png
-
 
 @logos_bp.get("/logos")
 async def get_logos(id: int = Query(None), rutalogo: str = Query(None), db: Session = Depends(get_db)):

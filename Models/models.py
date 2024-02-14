@@ -1,11 +1,8 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, TIMESTAMP, DateTime, Double
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, Text, DateTime, Double
 from sqlalchemy.orm import relationship
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy import create_engine
-from flask_login import UserMixin
 
 
 db_user = "admin123"
@@ -15,7 +12,6 @@ db_port = "5432"
 db_name = "tienda_juegos"
 
 database_uri = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-
 
 db = SQLAlchemy()
 
@@ -107,28 +103,10 @@ class Imagen(db.Model):
    
     producto = relationship("Producto")
 
-'''class MetodoPago(db.Model):      TABLA ANTIGUA
-    __tablename__ = "metodopago"
-    id = Column(Integer, primary_key=True)
-    id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
-    direccion_fact = Column(String(255), nullable=False)
-    nombreCompleto = Column(String(60), nullable=False)
-    id_metodo = Column(Integer, ForeignKey('tipopago.id'), nullable=False)
-    numero_tarjeta = Column(String(24), nullable=False)
-    cvv = Column(Integer, nullable=False)
-    titular_tarjeta = Column(String(40), nullable=False)
-    fecha_caduc = Column(Integer, nullable=False)
-    
-    tipopago = relationship("TipoPago")
-    usuario = relationship("Usuario")'''
-    
 class MetodoPago(db.Model):
     __tablename__ = "metodopago"
     id = Column(Integer, primary_key=True)
     tipo = Column(String(50), nullable=False)
-
-    
-    
 
 class Transaccion(db.Model):
     __tablename__ = "transaccion"
@@ -141,7 +119,6 @@ class Transaccion(db.Model):
     usuario = relationship("Usuario")
     metodopago = relationship("MetodoPago")
   
-    
 class TransaccionProducto(db.Model):
     __tablename__ = "transacionproducto"
     id = Column(Integer, primary_key=True)
@@ -152,7 +129,6 @@ class TransaccionProducto(db.Model):
     
     transaccion = relationship("Transaccion")
     producto = relationship("Producto")
-
 
 class ListaDeseos(db.Model):
     __tablename__ = "listadeseos"
@@ -187,7 +163,6 @@ class Resena(db.Model):
     valoracion = Column(Integer, nullable=False)
     id_usuario = Column(Integer, ForeignKey('usuarios.id'), nullable=False)
 
-    
     usuario = relationship("Usuario", back_populates="resenas")
     producto = relationship("Producto")
 
