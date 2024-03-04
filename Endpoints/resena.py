@@ -77,6 +77,10 @@ async def create_resena(resena_data: dict, db: Session = Depends(get_db)):
     return {"result": "Resena created successfully", "created_resena": created_resena_dict}
 
 
+from fastapi import FastAPI, HTTPException
+import smtplib
+from email.message import EmailMessage
+
 class Contacto(BaseModel):
     email: str
     title: str
