@@ -75,3 +75,31 @@ async def create_resena(resena_data: dict, db: Session = Depends(get_db)):
     created_resena_dict.pop('_sa_instance_state', None)
 
     return {"result": "Resena created successfully", "created_resena": created_resena_dict}
+
+
+class Contacto(BaseModel):
+    email: str
+    title: str
+    content: str
+
+
+@resena_bp.post("/contacto")
+async def create_resena(contacto: Contacto):
+    destinatario = 'informazioa@donostipub.eus'
+    msg = contacto.content
+
+    email = EmailMessage()
+    email['From'] = destinatario
+    email['To'] = destinatario
+    email['Subject'] = contacto.email
+    email.set_content(msg)
+
+    try:
+        s = smtplib.SMTP_SSL('donostipub-eus.correoseguro.dinaserver.com')
+        s.login("informazioa@donostipub.eus", "DawNaz@24")
+        s.sendmail(destinatario, destinatario, email.as_string())
+        s.quit()
+
+        print("Email sended!!!")
+    except smtplib.SMTPException as e:
+        print(f"Exception: {e}")
